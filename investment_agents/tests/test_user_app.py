@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
-from http.client import HTTPConnection
 import json
-from types import SimpleNamespace
+import re
 import threading
 import unittest
+from datetime import datetime, timedelta, timezone
+from http.client import HTTPConnection
+from types import SimpleNamespace
 
 from investment_agents.user_app.broker_readonly import (
     IBKRReadOnlyPortfolioConnector,
@@ -17,11 +18,14 @@ from investment_agents.user_app.broker_readonly import (
 )
 from investment_agents.user_app.models import AIConfig, BrokerConfig, BrokerKind, RiskLimits
 from investment_agents.user_app.risk_analysis import (
-    PortfolioInput, PositionInput, RiskAnalyzer, TradePointAnalyzer, TradePointInput,
+    PortfolioInput,
+    PositionInput,
+    RiskAnalyzer,
+    TradePointAnalyzer,
+    TradePointInput,
 )
 from investment_agents.user_app.server import RiskConsoleServer
 from investment_agents.user_app.session import SessionStore
-
 
 NOW = datetime.now(timezone.utc)
 
@@ -198,9 +202,11 @@ class HttpConsoleTests(unittest.TestCase):
         self.thread.join(timeout=3)
 
     def _post(self, path, payload, token=None, origin=None):
-        headers = {"Content-Type":"application/json"}
-        if token: headers["X-Session-Token"] = token
-        if origin: headers["Origin"] = origin
+        headers = {"Content-Type": "application/json"}
+        if token:
+            headers["X-Session-Token"] = token
+        if origin:
+            headers["Origin"] = origin
         self.connection.request("POST", path, json.dumps(payload), headers)
         response = self.connection.getresponse()
         return response.status, json.loads(response.read())
@@ -245,6 +251,33 @@ class HttpConsoleTests(unittest.TestCase):
         response = self.connection.getresponse()
         readiness = json.loads(response.read())["readiness"]
         self.assertEqual(readiness["broker_writes"], "ABSENT")
+
+    def test_console_exposes_persistent_chinese_english_language_switch(self) -> None:
+        self.connection.request("GET", "/")
+        response = self.connection.getresponse()
+        html = response.read().decode("utf-8")
+        self.assertEqual(response.status, 200)
+        self.assertIn('id="language-select"', html)
+        self.assertIn('<option value="zh-CN">中文</option>', html)
+        self.assertIn('<option value="en">English</option>', html)
+        self.assertIn('data-i18n="trade.title"', html)
+
+        self.connection.request("GET", "/app.js")
+        response = self.connection.getresponse()
+        javascript = response.read().decode("utf-8")
+        self.assertEqual(response.status, 200)
+        self.assertIn('localStorage.getItem("sentinel-language")', javascript)
+        self.assertIn('"trade.user_decides": "User decision required"', javascript)
+        zh_section, english_tail = javascript.split('\n  },\n  en: {', 1)
+        english_section = english_tail.split('\n  }\n};', 1)[0]
+        key_pattern = re.compile(r'"([^"]+)":')
+        zh_keys = set(key_pattern.findall(zh_section))
+        zh_keys.discard("zh-CN")
+        english_keys = set(key_pattern.findall(english_section))
+        html_keys = set(re.findall(r'data-i18n(?:-placeholder|-aria-label)?="([^"]+)"', html))
+        self.assertTrue(html_keys <= zh_keys)
+        self.assertTrue(html_keys <= english_keys)
+        self.assertEqual(zh_keys, english_keys)
 
 
 if __name__ == "__main__":

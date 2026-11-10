@@ -22,6 +22,10 @@ python -m investment_agents.user_app.server
 
 Then open `http://127.0.0.1:8765`.
 
+The console supports Chinese and English. It follows the browser language on
+first use, provides a manual switch in the header, and stores only that language
+preference in browser local storage.
+
 On Windows, the convenience launcher uses `python` from `PATH`:
 
 ```powershell

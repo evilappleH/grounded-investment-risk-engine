@@ -7,6 +7,7 @@ The project is designed to answer **“what could go wrong, and does this propos
 ## What is implemented
 
 - A local risk console that can read portfolio snapshots from Moomoo OpenD or IBKR Gateway/TWS.
+- A Chinese/English interface with browser-language detection and a persistent manual switch.
 - Read-only account discovery, position/cash synchronization, and automatic portfolio risk analysis.
 - Proposed buy/sell review with price, planned time, horizon, and portfolio-impact checks.
 - Concentration, cash, sector, currency, stale-data, and position-level risk diagnostics.
