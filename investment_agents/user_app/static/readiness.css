@@ -1,0 +1,1 @@
+.readiness-strip{display:flex;flex-wrap:wrap;gap:8px;margin:-6px 0 18px}.readiness-strip span{padding:7px 10px;border:1px solid var(--line);border-radius:999px;background:#f6f7f2;color:var(--muted);font-size:11px}.readiness-strip .ready{border-color:#b8d5c5;background:#e5f1ea;color:var(--green)}.readiness-strip .offline{border-color:#e3cda9;background:#fff6e6;color:var(--amber)}

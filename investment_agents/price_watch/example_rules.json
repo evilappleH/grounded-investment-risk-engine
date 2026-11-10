@@ -1,0 +1,15 @@
+{
+  "rules": [
+    {
+      "rule_id": "aos-buy-1",
+      "ticker": "AOS",
+      "side": "BUY_REVIEW",
+      "low": 54.0,
+      "high": 55.0,
+      "cooldown_seconds": 43200,
+      "rearm_above": 56.0,
+      "user_rationale": "示例规则：触发后重新检查估值、盈利质量和周期风险",
+      "enabled": false
+    }
+  ]
+}
