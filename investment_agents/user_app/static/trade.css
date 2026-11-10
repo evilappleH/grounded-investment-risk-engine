@@ -1,1 +1,31 @@
-.trade-result{margin-top:18px;padding:18px;border:1px solid var(--line);border-radius:10px;background:#f7f8f3}.trade-result h3{margin:0 0 12px;font:400 20px Georgia,serif}.trade-deltas{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.trade-deltas div{padding:12px;background:white;border-radius:7px}.trade-deltas span,.trade-deltas strong{display:block}.trade-deltas span{font-size:11px;color:var(--muted)}.trade-deltas strong{margin-top:7px}.trade-note{margin:13px 0 0;color:var(--muted);font-size:12px}.portfolio-status{display:flex;justify-content:space-between;gap:16px;padding:15px 17px;border:1px solid #cad8d0;border-radius:9px;background:var(--mint)}.portfolio-status strong{color:var(--green)}.portfolio-status span,.empty-row{color:var(--muted);font-size:12px}.empty-row{text-align:center;padding:28px}.readonly-row td{font-variant-numeric:tabular-nums}.time-review{margin-top:12px;padding:12px;border-left:3px solid var(--amber);background:#fff9ed;font-size:12px;color:#725322}@media(max-width:760px){.trade-deltas{grid-template-columns:1fr 1fr}.portfolio-status{display:grid}}
+.trade-result {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: linear-gradient(145deg, #f7faf7, #f1f6f2);
+}
+.trade-result h3 { margin: 0 0 14px; font: 500 20px/1.25 Georgia, serif; }
+.trade-deltas { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.trade-deltas div { padding: 14px; border: 1px solid rgba(31, 79, 56, 0.08); border-radius: 9px; background: white; }
+.trade-deltas span, .trade-deltas strong { display: block; }
+.trade-deltas span { color: var(--muted); font-size: 10px; }
+.trade-deltas strong { margin-top: 7px; font-size: 14px; }
+.trade-note { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.portfolio-status {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid rgba(35, 124, 86, 0.2);
+  border-radius: 11px;
+  background: linear-gradient(90deg, #e5f4eb, #edf8f2);
+}
+.portfolio-status strong { color: var(--green-deep); font-size: 12px; }
+.portfolio-status span { color: #61746a; font-size: 11px; }
+.time-review { margin-top: 13px; padding: 13px 14px; border-left: 3px solid #d59a39; border-radius: 0 8px 8px 0; background: #fff8e9; color: #715421; font-size: 11px; line-height: 1.5; }
+
+@media (max-width: 820px) {
+  .trade-deltas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .portfolio-status { display: grid; }
+}

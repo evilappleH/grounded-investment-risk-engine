@@ -17,16 +17,22 @@ Security properties in V1:
 Run locally:
 
 ```powershell
-python -m investment_agents.user_app.server
+python -m investment_agents.user_app.server --open-browser
 ```
 
 Then open `http://127.0.0.1:8765`.
 
-The console supports Chinese and English. It follows the browser language on
-first use, provides a manual switch in the header, and stores only that language
-preference in browser local storage.
+Do not use `investment_agents/user_app/static/index.html` as the working app.
+Opening that file directly is a styled, bilingual preview only; browser security
+prevents it from reaching the local account and risk-analysis API. Use the
+launcher or server command above for broker connections and analysis.
 
-On Windows, the convenience launcher uses `python` from `PATH`:
+The console supports English and Chinese. English is the first-use default,
+the header provides a manual switch, and only that language preference is
+stored in browser local storage.
+
+On Windows, the convenience launcher uses `python` from `PATH` and opens the
+correct local URL automatically:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\run_local_risk_ui.ps1

@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="本地优先的投资风险控制台">
-  <title>Sentinel · 投资风控台</title>
-  <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/trade.css">
-  <link rel="stylesheet" href="/readiness.css">
+  <meta name="description" content="Local-first investment risk control console">
+  <title>Sentinel · Investment Risk Console</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./trade.css">
+  <link rel="stylesheet" href="./readiness.css">
 </head>
 <body>
   <div class="shell">
@@ -27,7 +27,7 @@
     <main>
       <header class="topbar" id="overview">
         <div><p class="eyebrow">RISK BEFORE RETURN</p><h1 data-i18n="hero.title">先守住风险，再讨论机会。</h1></div>
-        <div class="top-actions"><label class="language-control"><span data-i18n="language.label">语言</span><select id="language-select" aria-label="语言"><option value="zh-CN">中文</option><option value="en">English</option></select></label><div class="privacy-badge" data-i18n="privacy">密钥仅存本次进程内存</div></div>
+        <div class="top-actions"><label class="language-control"><span data-i18n="language.label">Language</span><select id="language-select" aria-label="Language"><option value="en" selected>English</option><option value="zh-CN">中文</option></select></label><div class="privacy-badge" data-i18n="privacy">Keys live only in process memory</div></div>
       </header>
 
       <section class="hero-grid" aria-label="系统状态">
@@ -103,6 +103,6 @@
       </section>
     </main>
   </div>
-  <script src="/app.js" defer></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>

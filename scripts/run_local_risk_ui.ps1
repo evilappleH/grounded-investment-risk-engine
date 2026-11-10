@@ -21,4 +21,4 @@ if (-not (Test-Path -LiteralPath $PythonPath)) {
 Set-Location -LiteralPath $repository
 Write-Host "Starting Sentinel local risk console on http://127.0.0.1:$Port"
 Write-Host 'Real-account reads are enabled; broker write capability is absent.'
-& $PythonPath -m investment_agents.user_app.server --host 127.0.0.1 --port $Port
+& $PythonPath -m investment_agents.user_app.server --host 127.0.0.1 --port $Port --open-browser

@@ -55,10 +55,10 @@ Python 3.11+ is required. Create an isolated environment, then install:
 
 ```bash
 python -m pip install -e ".[dev,signal,user-app]"
-python -m investment_agents.user_app.server
+python -m investment_agents.user_app.server --open-browser
 ```
 
-Open `http://127.0.0.1:8765`. Keep the server bound to localhost. Start Moomoo OpenD or IBKR Gateway/TWS separately if you want account synchronization. The broker must be configured for local API access; use a read-only API setting where the broker supports it.
+This opens `http://127.0.0.1:8765`. Keep the server bound to localhost. Start Moomoo OpenD or IBKR Gateway/TWS separately if you want account synchronization. The broker must be configured for local API access; use a read-only API setting where the broker supports it. Opening `investment_agents/user_app/static/index.html` directly is only a styled bilingual preview; it cannot connect to the local account API.
 
 On Windows, the launcher also accepts an explicit interpreter:
 

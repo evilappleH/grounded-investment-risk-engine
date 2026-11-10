@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import webbrowser
 from datetime import datetime, timezone
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -149,6 +150,7 @@ class RiskConsoleHandler(BaseHTTPRequestHandler):
         body = (STATIC_DIR / file_name).read_bytes()
         self.send_response(HTTPStatus.OK)
         self._security_headers(content_type=content_type)
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
@@ -334,10 +336,13 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Local risk control console")
     parser.add_argument("--host", default="127.0.0.1", choices=("127.0.0.1", "localhost"))
     parser.add_argument("--port", type=int, default=8765)
+    parser.add_argument("--open-browser", action="store_true")
     args = parser.parse_args(argv)
     server = RiskConsoleServer((args.host, args.port))
     print(f"Risk console: http://{args.host}:{server.server_port}")
     print("Local memory only; real trading disabled. Press Ctrl+C to stop.")
+    if args.open_browser:
+        webbrowser.open(f"http://{args.host}:{server.server_port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

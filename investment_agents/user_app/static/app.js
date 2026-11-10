@@ -19,6 +19,7 @@ const translations = {
     "readiness.checking": "正在检查本地运行环境…", "readiness.model_runtime": "模型运行库", "readiness.ready": "已就绪",
     "readiness.not_installed": "未安装", "readiness.listening": "已监听", "readiness.not_running": "未启动",
     "readiness.local_port": "本地端口 {port}", "readiness.no_writes": "券商写入 · 不存在", "readiness.failed": "无法读取本地环境状态",
+    "readiness.preview_only": "当前是静态预览 · 请使用启动脚本连接本地服务",
     "broker.title": "券商账户", "broker.connection_type": "连接方式", "broker.moomoo_real": "Moomoo 实仓（只读）",
     "broker.ibkr_real": "IBKR 实仓（只读）", "broker.moomoo_sim": "Moomoo 模拟账户（只读）", "broker.ibkr_paper": "IBKR Paper（只读）",
     "broker.host": "本地地址", "broker.port": "端口", "broker.readonly_account": "只读账户", "broker.detect_first": "请先检测本地网关账户",
@@ -51,7 +52,7 @@ const translations = {
     "message.session_first": "请先建立本地会话。", "message.syncing": "正在只读同步实仓并自动运行风控…", "message.sync_failed": "实仓同步失败",
     "message.sync_done": "同步和风控完成；只读连接已断开。", "message.validating": "正在校验本地接口…", "message.config_failed": "配置失败",
     "message.connect_first": "请先连接并同步实仓。", "message.choose_time": "请选择计划时间。", "message.reviewing": "正在复核价格、时间与组合风险…",
-    "message.review_failed": "复核失败", "message.review_done": "复核完成；到达计划时间前仍须刷新实仓数据。",
+    "message.review_failed": "复核失败", "message.review_done": "复核完成；到达计划时间前仍须刷新实仓数据。", "message.server_required": "当前是静态预览。请运行启动脚本后访问 http://127.0.0.1:8765。",
     "trade.planned_time_text": "计划时间：{local}；美东：{eastern}；{freshness}", "trade.refresh_required": "届时必须重新同步实仓",
     "trade.snapshot_fresh": "当前快照仍在 15 分钟时效窗内", "trade.user_decides": "用户自行决定", "trade.blocked_projection": "无法完成风险投影",
     "trade.cash_delta": "现金比例变化", "trade.gross_delta": "总暴露变化", "trade.largest_delta": "最大单仓变化", "trade.hhi_delta": "HHI 变化",
@@ -73,6 +74,7 @@ const translations = {
     "readiness.checking": "Checking local runtime…", "readiness.model_runtime": "Model runtime", "readiness.ready": "Ready",
     "readiness.not_installed": "Not installed", "readiness.listening": "Listening", "readiness.not_running": "Not running",
     "readiness.local_port": "Local port {port}", "readiness.no_writes": "Broker writes · Absent", "readiness.failed": "Unable to read local runtime status",
+    "readiness.preview_only": "Static preview · use the launcher to connect the local service",
     "broker.title": "Broker Account", "broker.connection_type": "Connection type", "broker.moomoo_real": "Moomoo Live (read-only)",
     "broker.ibkr_real": "IBKR Live (read-only)", "broker.moomoo_sim": "Moomoo Simulate (read-only)", "broker.ibkr_paper": "IBKR Paper (read-only)",
     "broker.host": "Local host", "broker.port": "Port", "broker.readonly_account": "Read-only account", "broker.detect_first": "Detect local gateway accounts first",
@@ -105,7 +107,7 @@ const translations = {
     "message.session_first": "Create a local session first.", "message.syncing": "Synchronizing the live account read-only and running risk controls…", "message.sync_failed": "Live account sync failed",
     "message.sync_done": "Sync and risk analysis complete; the read-only connection has closed.", "message.validating": "Validating local interfaces…", "message.config_failed": "Configuration failed",
     "message.connect_first": "Connect and synchronize a live account first.", "message.choose_time": "Select a planned time.", "message.reviewing": "Reviewing price, time, and portfolio risk…",
-    "message.review_failed": "Review failed", "message.review_done": "Review complete; refresh the live account again before the planned time.",
+    "message.review_failed": "Review failed", "message.review_done": "Review complete; refresh the live account again before the planned time.", "message.server_required": "This is a static preview. Run the launcher, then open http://127.0.0.1:8765.",
     "trade.planned_time_text": "Planned: {local}; US Eastern: {eastern}; {freshness}", "trade.refresh_required": "the live account must be resynchronized at that time",
     "trade.snapshot_fresh": "the current snapshot remains inside the 15-minute freshness window", "trade.user_decides": "User decision required", "trade.blocked_projection": "Risk projection unavailable",
     "trade.cash_delta": "Cash weight change", "trade.gross_delta": "Gross exposure change", "trade.largest_delta": "Largest position change", "trade.hhi_delta": "HHI change",
@@ -114,7 +116,7 @@ const translations = {
     "blocker.INSUFFICIENT_CASH_AT_USER_PRICE": "Insufficient cash at the user's price", "blocker.SELL_QUANTITY_EXCEEDS_CURRENT_LONG_POSITION": "Proposed sell quantity exceeds the current long position"
   }
 };
-let language = localStorage.getItem("sentinel-language") || (navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en");
+let language = localStorage.getItem("sentinel-language") || "en";
 if (!translations[language]) language = "en";
 let money;
 let number;
@@ -161,6 +163,12 @@ function setLanguage(nextLanguage) {
   applyLanguage();
 }
 
+function requireLocalServer(messageElement) {
+  if (window.location.protocol !== "file:") return true;
+  setMessage(messageElement, t("message.server_required"), true);
+  return false;
+}
+
 function setMessage(element, text, error = false) {
   element.textContent = text;
   element.classList.toggle("error", error);
@@ -195,6 +203,10 @@ function metric(label, value) {
 
 async function loadReadiness() {
   const container = $("#runtime-readiness");
+  if (window.location.protocol === "file:") {
+    container.innerHTML = `<span class="offline preview-mode">${escapeHtml(t("readiness.preview_only"))}</span>`;
+    return;
+  }
   try {
     const response = await fetch("/api/runtime/readiness");
     const data = await response.json();
@@ -215,6 +227,7 @@ async function loadReadiness() {
 
 async function discoverBrokerAccounts() {
   const message = $("#config-message");
+  if (!requireLocalServer(message)) return;
   setMessage(message, t("broker.discovering"));
   const payload = { broker: {
     kind: $("#broker-kind").value, host: $("#broker-host").value,
@@ -273,6 +286,7 @@ function renderRisk(analysis, remember = true) {
 
 async function syncPortfolio() {
   const message = $("#config-message");
+  if (!requireLocalServer(message)) return;
   if (!sessionToken) { setMessage(message, t("message.session_first"), true); return; }
   setMessage(message, t("message.syncing"));
   try {
@@ -295,6 +309,7 @@ async function syncPortfolio() {
 
 async function saveConfig() {
   const message = $("#config-message");
+  if (!requireLocalServer(message)) return;
   setMessage(message, t("message.validating"));
   const payload = {
     broker: {
@@ -345,6 +360,7 @@ function renderTradeReview(review, remember = true) {
 
 async function reviewTradePoint() {
   const message = $("#trade-message");
+  if (!requireLocalServer(message)) return;
   if (!sessionToken) { setMessage(message, t("message.connect_first"), true); return; }
   const planned = new Date($("#trade-planned-at").value);
   if (Number.isNaN(planned.getTime())) { setMessage(message, t("message.choose_time"), true); return; }
