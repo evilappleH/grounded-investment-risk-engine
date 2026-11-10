@@ -116,7 +116,8 @@ const translations = {
     "blocker.INSUFFICIENT_CASH_AT_USER_PRICE": "Insufficient cash at the user's price", "blocker.SELL_QUANTITY_EXCEEDS_CURRENT_LONG_POSITION": "Proposed sell quantity exceeds the current long position"
   }
 };
-let language = localStorage.getItem("sentinel-language") || "en";
+const languageStorageKey = "sentinel-language-v2";
+let language = localStorage.getItem(languageStorageKey) || "en";
 if (!translations[language]) language = "en";
 let money;
 let number;
@@ -159,7 +160,7 @@ function applyLanguage() {
 
 function setLanguage(nextLanguage) {
   language = translations[nextLanguage] ? nextLanguage : "en";
-  localStorage.setItem("sentinel-language", language);
+  localStorage.setItem(languageStorageKey, language);
   applyLanguage();
 }
 
